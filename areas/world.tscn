@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/Tree.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Ground.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Block.tscn" type="PackedScene" id=4]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+ambient_light_color = Color( 1, 1, 1, 1 )
+ambient_light_energy = 0.2
+
+[sub_resource type="PlaneMesh" id=2]
+
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 0, 0, 1, 1 )
+
+[sub_resource type="BoxShape" id=4]
+
+[node name="World" type="Spatial"]
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+transform = Transform( 0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 3, 20, 3 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 1 )
+
+[node name="Level" type="Spatial" parent="."]
+
+[node name="Tree" parent="Level" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+
+[node name="Water" type="MeshInstance" parent="Level"]
+transform = Transform( 1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, 0, 0 )
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
+
+[node name="oceanfloor" type="StaticBody" parent="Level/Water"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Water/oceanfloor"]
+shape = SubResource( 4 )
+
+[node name="OmniLight" type="OmniLight" parent="Level"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
+light_energy = 3.16
+shadow_bias = 2.0
+omni_range = 26.7
+
+[node name="Ground" parent="Level" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0 )
+Tree = ExtResource( 2 )
+
+[node name="Block" parent="Level" instance=ExtResource( 4 )]
+transform = Transform( 2.12132, 0, 0.707107, 0, 1, 0, -2.12132, 0, 0.707107, -24, 20, -24 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.998755, -0.0431958, 0.0249391, 0, 0.5, 0.866025, -0.0498783, -0.864947, 0.499378, 0, 27.6292, 16.0728 )
+light_energy = 0.9
+shadow_color = Color( 0.2, 0.2, 0.2, 1 )
