@@ -10,12 +10,13 @@ background_mode = 1
 ambient_light_color = Color( 1, 1, 1, 1 )
 ambient_light_energy = 0.2
 
-[sub_resource type="PlaneMesh" id=2]
-
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="SpatialMaterial" id=6]
 albedo_color = Color( 0, 0, 1, 1 )
 
-[sub_resource type="BoxShape" id=4]
+[sub_resource type="PlaneMesh" id=3]
+material = SubResource( 6 )
+
+[sub_resource type="BoxShape" id=5]
 
 [node name="World" type="Spatial"]
 
@@ -32,14 +33,14 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
 
 [node name="Water" type="MeshInstance" parent="Level"]
 transform = Transform( 1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, 0, 0 )
-mesh = SubResource( 2 )
-material/0 = SubResource( 3 )
+mesh = SubResource( 3 )
+material/0 = null
 
 [node name="oceanfloor" type="StaticBody" parent="Level/Water"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Level/Water/oceanfloor"]
-shape = SubResource( 4 )
+shape = SubResource( 5 )
 
 [node name="OmniLight" type="OmniLight" parent="Level"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
@@ -48,7 +49,6 @@ shadow_bias = 2.0
 omni_range = 26.7
 
 [node name="Ground" parent="Level" instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0 )
 Tree = ExtResource( 2 )
 
 [node name="Block" parent="Level" instance=ExtResource( 4 )]

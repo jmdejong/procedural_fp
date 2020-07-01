@@ -5,7 +5,8 @@ export var xzmax = Vector2(128, 128)
 export var granularity = 4
 export var rigged = 2
 export var tile_size = 4
-export var max_height = 20
+export var min_height = -5
+export var max_height = 10
 export var shore_offset = 32
 
 
@@ -17,7 +18,7 @@ var noise
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	noise = OpenSimplexNoise.new()
-	noise.seed = 15
+	noise.seed = randi()
 	to_mesh()
 	to_collision()
 	make_trees()
@@ -25,20 +26,23 @@ func _ready():
 func make_trees():
 	var area = xzmax - xzmin
 	var ntrees = area.x * area.y * tree_density
-	for i in range(ntrees):
+	for _i in range(ntrees):
+		var pos = xzmin + area * Vector2(randf(), randf())
+		var height = get_height(pos.x, pos.y)
+		if height <= 0:
+			continue
 		var tree = Tree.instance()
 		add_child(tree)
-		var pos = xzmin + area * Vector2(randf(), randf())
 		tree.translation = get_point(pos.x, pos.y)
 		tree.rotate_y(randf() * 2 * PI)
 
 func get_height(x, z):
 	if x < xzmin.x or z < xzmin.y or x >= xzmax.x or z >= xzmax.y:
-		return 0
-	var h = (noise.get_noise_2d(x*rigged, z*rigged) + 1) * max_height / 2
+		return min_height
+	var h = (noise.get_noise_2d(x*rigged, z*rigged) + 1) / 2 * (max_height - min_height)
 	var shore_distance = 1
 	shore_distance = [x - xzmin.x, z - xzmin.y, xzmax.x - x, xzmax.y - z, shore_offset].min() / shore_offset
-	return h * shore_distance
+	return h * shore_distance + min_height
 
 
 func get_point(x, z):
