@@ -1,27 +1,40 @@
 extends StaticBody
 
 export var xzmin = Vector2(-128, -128)
-export var xzmax = Vector2(128, 128)
+export var area_size = Vector2(1024, 1024)
+var xzmax = xzmin + area_size
 export var granularity = 4
-export var rigged = 2
+export var rigged = 1
 export var tile_size = 4
-export var min_height = -5
-export var max_height = 10
-export var shore_offset = 32
+export var base_height = -33
+export var max_hill = 40
+export var shore_offset = 128
+export var shore_height = -5
 
 
 export (PackedScene) var Tree
 export var tree_density = 0.01
 
+export (PackedScene) var Rock
+export var rock_density = 0.001
+
 var noise
+var bignoise
+var slopenoise
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
 	noise = OpenSimplexNoise.new()
 	noise.seed = randi()
+	bignoise = OpenSimplexNoise.new()
+	bignoise.seed = randi()
+	slopenoise = OpenSimplexNoise.new()
+	slopenoise.seed = randi()
 	to_mesh()
 	to_collision()
-	make_trees()
+# 	make_trees()
+# 	make_rocks()
 
 func make_trees():
 	var area = xzmax - xzmin
@@ -36,13 +49,31 @@ func make_trees():
 		tree.translation = get_point(pos.x, pos.y)
 		tree.rotate_y(randf() * 2 * PI)
 
+func make_rocks():
+	var area = xzmax - xzmin
+	var ntrees = area.x * area.y * rock_density
+	for _i in range(ntrees):
+		var pos = xzmin + area * Vector2(randf(), randf())
+		var height = get_height(pos.x, pos.y)
+		var rock = Rock.instance()
+		add_child(rock)
+		rock.translation = get_point(pos.x, pos.y)
+		rock.rotate_y(randf() * 2 * PI)
+
+func sqr(x):
+	return x * x
+
 func get_height(x, z):
 	if x < xzmin.x or z < xzmin.y or x >= xzmax.x or z >= xzmax.y:
-		return min_height
-	var h = (noise.get_noise_2d(x*rigged, z*rigged) + 1) / 2 * (max_height - min_height)
+		return base_height
+	var hills = (noise.get_noise_2d(x*rigged, z*rigged) + 1) / 2 * max_hill
+	var elevation_rigged = 0.2
+	var elevation = (bignoise.get_noise_2d(x*elevation_rigged, z*elevation_rigged) + 1) / 2 * 100
+	var slopes = sqr((slopenoise.get_noise_2d(x/10, z/10) + 1) / 2)
+	var h = base_height + elevation + hills*slopes
 	var shore_distance = 1
-	shore_distance = [x - xzmin.x, z - xzmin.y, xzmax.x - x, xzmax.y - z, shore_offset].min() / shore_offset
-	return h * shore_distance + min_height
+	shore_distance = sqrt(clamp([x - xzmin.x, z - xzmin.y, xzmax.x - x, xzmax.y - z].min() / shore_offset, 0, 1))
+	return h * shore_distance + shore_height * (1-shore_distance)
 
 
 func get_point(x, z):

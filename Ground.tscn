@@ -7,18 +7,18 @@ map_width = 9
 map_depth = 9
 map_data = PoolRealArray( 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 
-[sub_resource type="CylinderMesh" id=4]
+[sub_resource type="CylinderMesh" id=2]
 top_radius = 0.1
 bottom_radius = 0.1
 height = 1.0
 
-[sub_resource type="SpatialMaterial" id=2]
+[sub_resource type="SpatialMaterial" id=3]
 flags_vertex_lighting = true
 params_specular_mode = 4
 albedo_color = Color( 0.333333, 0.866667, 0, 1 )
 metallic_specular = 0.0
 
-[sub_resource type="ArrayMesh" id=3]
+[sub_resource type="ArrayMesh" id=4]
 
 [node name="Ground" type="StaticBody"]
 script = ExtResource( 1 )
@@ -29,10 +29,10 @@ shape = SubResource( 1 )
 [node name="MeshInstance" type="MeshInstance" parent="Collision"]
 transform = Transform( 1, 0, 0, 0, 100, 0, 0, 0, 1, 0, 50, 0 )
 visible = false
-mesh = SubResource( 4 )
+mesh = SubResource( 2 )
 material/0 = null
 
 [node name="Mesh" type="MeshInstance" parent="."]
-material_override = SubResource( 2 )
+material_override = SubResource( 3 )
 cast_shadow = 0
-mesh = SubResource( 3 )
+mesh = SubResource( 4 )

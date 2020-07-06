@@ -1,9 +1,10 @@
 extends KinematicBody
 
 export var GRAVITY = -9.81
-export var SPEED = 5
+export var speed = 5
+export var sprint_speed = 50
 export var MOUSE_SENSITIVITY = -.3
-export var JUMP_SPEED = 10
+export var jump_speed = 10
 export var jump_in_air = true
 var vel = Vector3()
 
@@ -16,7 +17,8 @@ func _physics_process(delta):
 		int(Input.is_action_pressed("forward")) - int(Input.is_action_pressed("backward"))
 	)
 	input_movement = input_movement.normalized()
-	var movement = (Vector3(input_movement.x, 0, -input_movement.y) * SPEED).rotated(Vector3(0, 1, 0), self.rotation.y)
+	var s = speed if not Input.is_action_pressed("sprint") else sprint_speed
+	var movement = (Vector3(input_movement.x, 0, -input_movement.y) * s).rotated(Vector3(0, 1, 0), self.rotation.y)
 	vel.x = movement.x
 	vel.z = movement.z
 	
@@ -24,9 +26,11 @@ func _physics_process(delta):
 	vel.y += delta * GRAVITY
 	if is_on_floor() or jump_in_air:
 		if Input.is_action_just_pressed("jump"):
-			vel.y = JUMP_SPEED
+			vel.y = jump_speed
 	
-	vel = self.move_and_slide(vel, Vector3(0, 1, 0))
+	vel = self.move_and_slide(vel, Vector3(0, 1, 0), true, 1, deg2rad(60))
+# 	if vel.y > 0 && vel.x != 0:
+# 		print(vel.x * delta, " ", vel.z * delta)
 	
 	
 	
