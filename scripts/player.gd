@@ -8,9 +8,6 @@ export var jump_speed = 10
 export var jump_in_air = true
 var vel = Vector3()
 
-func _ready():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
 func _physics_process(delta):
 	var input_movement = Vector2(
 		int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left")),
@@ -28,9 +25,10 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("jump"):
 			vel.y = jump_speed
 	
-	vel = self.move_and_slide(vel, Vector3(0, 1, 0), true, 1, deg2rad(60))
-# 	if vel.y > 0 && vel.x != 0:
-# 		print(vel.x * delta, " ", vel.z * delta)
+	var oldvel = vel
+	vel = self.move_and_slide(vel, Vector3(0, 1, 0), true, 4, deg2rad(60))
+	if vel.y > 0 and vel.y > oldvel.y:
+		vel.y = max(0, oldvel.y)
 	
 	
 	

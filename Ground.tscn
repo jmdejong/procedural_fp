@@ -1,6 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/ground.gd" type="Script" id=1]
+[ext_resource path="res://assets/Rock.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/Tree.tscn" type="PackedScene" id=3]
 
 [sub_resource type="HeightMapShape" id=1]
 map_width = 9
@@ -22,11 +24,14 @@ metallic_specular = 0.0
 
 [node name="Ground" type="StaticBody"]
 script = ExtResource( 1 )
+Tree = ExtResource( 3 )
+tree_density = 0.005
+Rock = ExtResource( 2 )
 
 [node name="Collision" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Collision"]
+[node name="Origin" type="MeshInstance" parent="Collision"]
 transform = Transform( 1, 0, 0, 0, 100, 0, 0, 0, 1, 0, 50, 0 )
 visible = false
 mesh = SubResource( 2 )
