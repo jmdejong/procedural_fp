@@ -23,6 +23,7 @@ metallic_specular = 0.0
 [sub_resource type="ArrayMesh" id=4]
 
 [node name="Ground" type="StaticBody"]
+collision_layer = 0
 script = ExtResource( 1 )
 Tree = ExtResource( 3 )
 tree_density = 0.005

@@ -63,9 +63,9 @@ func make_entities(typ, density, bp, min_height=0):
 		if height <= min_height:
 			continue
 		var entity = typ.instance()
-		add_child(entity)
 		entity.translation = Vector3(pos.x, height, pos.y)
 		entity.rotate_y(randf() * 2 * PI)
+		add_child(entity)
 
 
 
